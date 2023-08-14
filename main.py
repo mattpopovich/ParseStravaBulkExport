@@ -28,9 +28,9 @@ csv_file_path: Final[str] = STRAVA_EXPORTED_FOLDER_PATH + "/activities.csv"
 ORIGINAL_FOLDER_PERMISSIONS = os.stat(STRAVA_EXPORTED_FOLDER_PATH).st_mode & 0o777
 # Folders are 755
 # Files are 644
-os.chmod(STRAVA_EXPORTED_FOLDER_PATH, 0o555)
-os.chmod(ACTIVITIES_FOLDER_PATH, 0o555)
-os.chmod(csv_file_path, 0o444)
+# os.chmod(STRAVA_EXPORTED_FOLDER_PATH, 0o555)
+# os.chmod(ACTIVITIES_FOLDER_PATH, 0o555)
+# os.chmod(csv_file_path, 0o444)
 
 # Check if the CSV file exists before reading
 if csv_file_path == "strava_export_########":
@@ -51,7 +51,21 @@ with open(csv_file_path, 'r', newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         if row['Activity Type'] == target_activity_type:
-            ride_activity_filenames.append(STRAVA_EXPORTED_FOLDER_PATH + "/" + row['Filename'])
+            filename = row['Filename']
+            alternative_filename = filename.rstrip(".gz")
+            if filename == "":
+                print(f"WARNING: The activity {row['Activity Name']} on {row['Activity Date']} does not have a Filename... skipping")
+            elif os.path.exists(STRAVA_EXPORTED_FOLDER_PATH + "/" + filename):
+                ride_activity_filenames.append(STRAVA_EXPORTED_FOLDER_PATH + "/" + filename)
+            elif os.path.exists(STRAVA_EXPORTED_FOLDER_PATH + "/" + alternative_filename):
+                # Sometimes Strava's Filename field is wrong??
+                print(f"WARNING: Strava thought there was a file: {STRAVA_EXPORTED_FOLDER_PATH + '/' + filename}")
+                print(f"         We located it at {STRAVA_EXPORTED_FOLDER_PATH + '/' + alternative_filename}")
+                ride_activity_filenames.append(STRAVA_EXPORTED_FOLDER_PATH + "/" + alternative_filename)
+            else:
+                print(f"WARNING: Strava throught there was a file: {STRAVA_EXPORTED_FOLDER_PATH + '/' + filename}. "
+                    "We could not find it. Skipping...")
+
 
 # Print the list of filenames for "Ride" activities
 print("Filenames for 'Ride' activities:")
@@ -60,7 +74,7 @@ for filename in ride_activity_filenames:
 
 # Create rides folder
 EXPORT_FOLDER_NAME: Final[str] = "exports"
-RIDES_FOLDER_NAME: str = EXPORT_FOLDER_NAME + "/rides"
+RIDES_FOLDER_NAME: str = EXPORT_FOLDER_NAME + "/" + target_activity_type
 if os.path.exists(RIDES_FOLDER_NAME):
     if args.overwrite:
         shutil.rmtree(RIDES_FOLDER_NAME)
@@ -91,6 +105,6 @@ if len(zipped_up_file_paths) > 0:
 
 # TODO: Replace this with an integration test that makes sure nothing was changed
 # Mark Strava's exported folder permissions back to what they were
-os.chmod(STRAVA_EXPORTED_FOLDER_PATH, ORIGINAL_FOLDER_PERMISSIONS)
-os.chmod(ACTIVITIES_FOLDER_PATH, ORIGINAL_FOLDER_PERMISSIONS)
-os.chmod(csv_file_path, 0o644)
+# os.chmod(STRAVA_EXPORTED_FOLDER_PATH, ORIGINAL_FOLDER_PERMISSIONS)
+# os.chmod(ACTIVITIES_FOLDER_PATH, ORIGINAL_FOLDER_PERMISSIONS)
+# os.chmod(csv_file_path, 0o644)
