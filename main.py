@@ -1,12 +1,12 @@
 import configparser         # Reading the config.cfg file
 import csv                  # Reading and parsing Strava's activities.csv file
-import os
+import os                   # File, path, directory, etc. operations
 import sys                  # sys.exit()
-import argparse
-import shutil
-import gzip
-import fnmatch
-import logging
+import argparse             # Parsing command line arguments
+import shutil               # Copy and remove files/folders
+import gzip                 # Unzipping folders
+import fnmatch              # Filename matching with shell patterns
+import logging              # Standard python logging module
 
 from typing import Final, List    # Typing hints: Final[variable type]
 
@@ -28,16 +28,16 @@ def create_export_folder(target_activity_type: str, csv_file_path: str, STRAVA_E
                 filename = row['Filename']
                 alternative_filename = filename.rstrip(".gz")
                 if filename == "":
-                    print(f"WARNING: The activity {row['Activity Name']} on {row['Activity Date']} does not have a Filename... skipping")
+                    logging.warning(f"The activity {row['Activity Name']} on {row['Activity Date']} does not have a Filename... skipping")
                 elif os.path.exists(STRAVA_EXPORTED_FOLDER_PATH + "/" + filename):
                     activity_filenames.append(STRAVA_EXPORTED_FOLDER_PATH + "/" + filename)
                 elif os.path.exists(STRAVA_EXPORTED_FOLDER_PATH + "/" + alternative_filename):
                     # Sometimes Strava's Filename field is wrong??
-                    print(f"WARNING: Strava thought there was a file: {STRAVA_EXPORTED_FOLDER_PATH + '/' + filename}")
-                    print(f"         We located it at {STRAVA_EXPORTED_FOLDER_PATH + '/' + alternative_filename}")
+                    logging.warning(f"Strava thought there was a file: {STRAVA_EXPORTED_FOLDER_PATH + '/' + filename}\n"
+                                    f"         We located it at {STRAVA_EXPORTED_FOLDER_PATH + '/' + alternative_filename}")
                     activity_filenames.append(STRAVA_EXPORTED_FOLDER_PATH + "/" + alternative_filename)
                 else:
-                    print(f"WARNING: Strava throught there was a file: {STRAVA_EXPORTED_FOLDER_PATH + '/' + filename}. "
+                    logging.warning(f"Strava throught there was a file: {STRAVA_EXPORTED_FOLDER_PATH + '/' + filename}. "
                         "We could not find it. Skipping...")
 
 
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     LOG_LEVEL: int = logging.ERROR
     if args.debug:
         LOG_LEVEL: int = logging.DEBUG
-    logging.basicConfig(level=LOG_LEVEL)
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=LOG_LEVEL)
 
     # Define the path to your CSV file
     STRAVA_EXPORTED_FOLDER_PATH: Final[str] = config['DEFAULT']['STRAVA_EXPORTED_FOLDER_PATH']
@@ -128,6 +128,15 @@ if __name__ == "__main__":
         print(f"Parsing the {csv_file_path} file...")
 
     # Define the Activity Type you want to filter for
-    target_activity_type = 'Run'
+    all_activity_types: List[str] = []
 
-    create_export_folder(target_activity_type, csv_file_path, STRAVA_EXPORTED_FOLDER_PATH)
+    # Find all activity types
+    with open(csv_file_path, 'r', newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            all_activity_types.append(row['Activity Type'])
+
+    for activity_type in list(set(all_activity_types)):
+        create_export_folder(activity_type, csv_file_path, STRAVA_EXPORTED_FOLDER_PATH)
+
+    print("Complete!")
