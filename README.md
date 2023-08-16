@@ -19,22 +19,23 @@ On a computer that has Python installed:
 ```console
 $ python main.py 
 Parsing the strava_export_12345678/activities.csv file...
-Copied 1 files to the exports/Stand Up Paddling folder
-Copied 6 files to the exports/Kitesurf folder
-Copied 6 files to the exports/Walk folder
-Copied 20 files to the exports/Inline Skate folder
-Copied 145 files to the exports/Velomobile folder
-Copied 1 files to the exports/Virtual Ride folder
-Copied 1 files to the exports/Golf folder
-Copied 1 files to the exports/Ice Skate folder
-Copied 98 files to the exports/Run folder
-Copied 56 files to the exports/Snowboard folder
-Copied 36 files to the exports/Hike folder
 Copied 14 files to the exports/Alpine Ski folder
 Copied 181 files to the exports/E-Bike Ride folder
-Copied 11 files to the exports/Swim folder
-Copied 261 files to the exports/Ride folder
+Copied 1 files to the exports/Golf folder
+Copied 36 files to the exports/Hike folder
+Copied 1 files to the exports/Ice Skate folder
+Copied 20 files to the exports/Inline Skate folder
 Copied 13 files to the exports/Kayaking folder
+Copied 6 files to the exports/Kitesurf folder
+Copied 261 files to the exports/Ride folder
+Copied 98 files to the exports/Run folder
+Copied 56 files to the exports/Snowboard folder
+Copied 1 files to the exports/Stand Up Paddling folder
+Copied 11 files to the exports/Swim folder
+Copied 145 files to the exports/Velomobile folder
+Copied 1 files to the exports/Virtual Ride folder
+Copied 6 files to the exports/Walk folder
+Complete!
 ```
 
 You will then see an `exports` folder with folders inside of it each containing their respective activities files.

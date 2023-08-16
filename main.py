@@ -54,7 +54,7 @@ def create_export_folder(target_activity_type: str, csv_file_path: str, STRAVA_E
             shutil.rmtree(RIDES_FOLDER_NAME)
         else:
             sys.exit(f"{RIDES_FOLDER_NAME} folder already exists,"
-                    " please remove it (or add the `--overwrite` flag) then run this script again")
+                    " please remove it (or run this script again but with the `--overwrite` flag)")
 
     os.makedirs(RIDES_FOLDER_NAME)
 
@@ -136,7 +136,8 @@ if __name__ == "__main__":
         for row in reader:
             all_activity_types.append(row['Activity Type'])
 
-    for activity_type in list(set(all_activity_types)):
+    # Loop through each unique activity type (sorted for repeatability)
+    for activity_type in sorted(list(set(all_activity_types))):
         create_export_folder(activity_type, csv_file_path, STRAVA_EXPORTED_FOLDER_PATH)
 
     print("Complete!")
