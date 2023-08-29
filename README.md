@@ -6,10 +6,10 @@
 
 [![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/mattpopovich/ParseStravaBulkExport)
 
-### The Problem:
+## The Problem:
 Strava will let you export all your activities just fine, but it is up to you to find out which activities correspond to biking vs. running, etc. Thankfully, they give you a nice `activities.csv` file telling you some details for each file in the `activities` folder.
 
-### The Solution:
+## The Solution:
 Parse that `activities.csv` file to pull out the activities we want based on certain parameters.
 
 ## Use
@@ -38,7 +38,13 @@ Copied 6 files to the exports/Walk folder
 Complete!
 ```
 
-You will then see an `exports` folder with folders inside of it each containing their respective activities files.
+You will then see an `exports` folder with folders inside of it each containing their respective unzipped (*.gpx.gz -> *.gpx) activities files.
+
+## Using the exported folders
+* Drag these files into [@erik](https://github.com/erik)'s [dérive](https://erik.github.io/derive/) browser utility to generate a heatmap
+* Analyze them however you'd like!
 
 ## Future Work:
-Create individual export folders for values other than activity type such as distance, elapsed time, gear, etc. 
+* Create individual export folders for values other than activity type such as distance, elapsed time, gear, etc. 
+* Save heatmaps as images
+* Save a heatmap video showing progression
